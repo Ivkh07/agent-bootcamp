@@ -47,7 +47,7 @@ async_openai_client = AsyncOpenAI()
 code_interpreter = CodeInterpreter(
     local_files=[
         Path("sandbox_content/"),
-        Path("tests/tool_tests/example_files/example_a.csv"),
+        Path  ('/home/coder/data/ready'), # ("/home/coder/data/1"),  #("tests/tool_tests/example_files/example_a.csv"),
     ]
 )
 
