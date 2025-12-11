@@ -1,0 +1,98 @@
+You will build a supervised binary classification model using the file `data_b.csv`. Use column `target` as the label.
+
+1) Data loading & initial checks
+   - Load `data_b.csv` and print: number of rows, columns, column names and dtypes, number of missing values per column, and a 10-row sample (head).
+   - Use RANDOM_SEED = 42 for reproducibility.
+
+2) Drop unwanted columns
+   - Immediately drop the columns: `id`, `date`, `client_id`, `card_id`, `card_number`, `expires`, `cvv`.
+   - Also drop any column whose name contains the substring `test` (case-insensitive) or is clearly a test/holdout flag.
+
+3) Target & problem setup
+   - Confirm `target` is binary. If not binary, describe unique values and convert to binary labels if it is clearly a two-class mapping (document how you convert). If `target` has missing values, drop rows with missing target.
+   - Report class distribution (counts and percentages). If classes are imbalanced, note the imbalance ratio.
+
+4) Data cleaning & preprocessing
+   - For numeric columns:
+     * Report descriptive statistics (count, mean, std, min, 25, 50, 75, max).
+     * For columns with >30% missing values, report them and drop them from further modeling unless you provide a reason not to.
+     * For remaining numeric columns, impute missing values with the median.
+   - For categorical columns:
+     * Treat column `mcc` as categorical. Show value counts and top categories.
+     * For high-cardinality categorials (more than 30 unique values) report them; encode only if needed for feature selection/modeling.
+     * Use one-hot encoding for low-cardinality categoricals (<=10 categories). For high-cardinality `mcc` consider target encoding or frequency encoding — test both options as part of model experiments and report which was used in the final model.
+   - Standardize numeric features (zero mean, unit variance) before modeling where appropriate (for models that are sensitive to scale).
+
+5) Feature selection (follow a two-stage process)
+   Stage A — Filter:
+     - Start by restricting the feature pool to all numeric columns (after imputation) plus encoded `mcc` variants if they are numeric/encoded.
+     - Exclude any columns that appear to leak target/test info or are identifiers.
+   Stage B — Importance-based selection:
+     - Use an ensemble tree model (e.g., RandomForestClassifier or LightGBM) with default settings to compute feature importances on the training set using cross-validation (5-fold, stratified).
+     - Also compute permutation feature importance (with at least 30 repeats or a stable random_state) to validate importances.
+     - Optionally compute SHAP summary values for the top features to confirm directionality.
+   - From these results pick the **top 7 features** to use in the final model. Provide justification (importance scores, stability across CV folds, and SHAP/permutation confirmation).
+
+6) Correlations & multicollinearity
+   - For the selected top 7 features, compute:
+     * Pearson correlation matrix (show values and a heatmap).
+     * If categorical features included, compute point-biserial or Cramér's V as appropriate and report significant pairwise associations.
+   - If any pair of top features has correlation |r| > 0.85, flag multicollinearity and either drop one or create an aggregate feature — show which decision you made and why.
+
+7) Modeling workflow
+   - Split the data into train and test sets (stratified) with test_size = 0.2 and random_state = 42. Keep the test set untouched until final evaluation.
+   - On the training set perform:
+     * 5-fold stratified cross-validation for model selection.
+     * Try at least two model families: tree ensemble (e.g., LightGBM or RandomForest) and a linear model with regularization (LogisticRegression with class_weight or penalty). If classes are highly imbalanced, try class weighting and/or SMOTE (document results).
+     * For the best model(s), run a simple hyperparameter search (GridSearchCV or RandomizedSearchCV) with reasonable parameter ranges and use scoring = 'roc_auc' and also track 'precision' and 'recall'.
+   - Choose a final model based on ROC_AUC primarily, but also consider precision/recall and calibration.
+
+8) Final model training & outputs
+   - Train the final model on the full training set using the selected top 7 features and the chosen preprocessing pipeline.
+   - Save the trained model to disk (e.g., `final_model.pkl`) and save the preprocessing pipeline (`preprocessor.pkl`).
+   - Export a CSV `top7_feature_importances.csv` with columns: feature, importance_mean, importance_std, permutation_importance_mean, permutation_importance_std, shap_mean_abs (if computed).
+
+9) Evaluation on test set (final metrics & plots)
+   - Calculate and print: confusion matrix, precision, recall, F1-score, accuracy, class-specific precision/recall, and overall ROC_AUC on the held-out test set.
+   - Provide the classification report (scikit-learn).
+   - Plot and save:
+     * Confusion matrix (as an image file `confusion_matrix.png`).
+     * ROC curve with AUC annotated (`roc_curve.png`).
+     * Precision-Recall curve with average precision (`pr_curve.png`).
+     * Calibration plot (reliability curve) and Brier score.
+   - If beneficial, compute an optimized decision threshold (e.g., maximize F1 or a chosen precision/recall tradeoff) and show how precision/recall change with threshold. Report recommended threshold and the new confusion matrix/metrics at that threshold.
+
+10) Additional analysis & interpretability
+    - For the final model, provide:
+      * Feature importance table and bar chart for the top 7 features.
+      * SHAP summary plot and SHAP dependence plot for at least 2 most important features (if SHAP is computationally feasible).
+      * Partial dependence plots (or ICE) for top 2 numeric features.
+    - Produce a short natural-language summary (4–8 sentences) describing:
+      * What the top 7 features are, which direction (higher/lower) is associated with positive class, how reliable those signals appear, and any caveats (imbalance, leakage risk, missing-value concerns).
+      * Whether model performance is likely sufficient for production use or whether more data/features are needed.
+
+11) Reporting & deliverables
+    - Provide the following files saved in the working directory:
+      * `final_model.pkl` and `preprocessor.pkl`
+      * `top7_feature_importances.csv`
+      * `confusion_matrix.png`, `roc_curve.png`, `pr_curve.png`, `calibration_curve.png`
+      * `analysis_report.txt` — a single text file containing:
+         - Steps taken (data cleaning, imputation, encoding)
+         - Final selected features and why
+         - Final test metrics (precision, recall, f1, roc_auc) and confusion matrix
+         - Any important charts embedded as filenames
+         - Short natural-language summary of insights and next steps
+    - Print a concise tabular summary of the most important outputs in the notebook: top7 feature names and their importances, test ROC_AUC, test precision, test recall, and test F1.
+
+12) Implementation & logging
+    - Use scikit-learn (and LightGBM if available). Use pipelines (ColumnTransformer + Pipeline) for preprocessing to ensure reproducibility.
+    - Log time taken for each major step (data load, preprocessing, selection, CV, final eval).
+    - Use clear print statements so the notebook output can be followed by a human reviewer.
+
+13) Error handling & transparency
+    - If any operation cannot be completed (e.g., SHAP too slow, LightGBM not installed), document the error and fall back gracefully to an alternative, explaining the reason.
+    - If numeric-only restriction (initial) leads to losing important categorical signals, show a brief comparison (numeric-only vs numeric+encoded mcc) and choose the best-performing pipeline.
+
+Important: Throughout the process prioritize explainability and reproducibility. At the end, include a final short bullet list of recommended next steps (data to collect, features to engineer, or further modeling to try).
+
+Use random_state = 42 everywhere for reproducibility.

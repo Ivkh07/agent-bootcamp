@@ -12,6 +12,7 @@ import gradio as gr
 from dotenv import load_dotenv
 from gradio.components.chatbot import ChatMessage
 from openai import AsyncOpenAI
+import os
 
 from src.utils import (
     CodeInterpreter,
@@ -42,16 +43,18 @@ You can also run Jupyter-style shell commands (e.g., `!pip freeze`)
 but you won't be able to install packages.
 """
 
-AGENT_LLM_NAME = "gemini-2.5-flash"
+AGENT_LLM_NAME = "gemini-2.5-pro"#"gemini-2.5-flash"
 async_openai_client = AsyncOpenAI()
 code_interpreter = CodeInterpreter(
     local_files=[
         Path("sandbox_content/"),
-        ("tests/tool_tests/example_files/data.csv"),
+        "tests/tool_tests/example_files/data_b.csv",
         #Path  ('/home/coder/data/ready'), 
         # ("/home/coder/data/1"),  
         #("tests/tool_tests/example_files/example_a.csv"),
-    ]
+    ], 
+    sandbox_output_file = 'result.json', 
+    local_save_directory = "local_sandbox_downloads"
 )
 
 
@@ -92,8 +95,8 @@ demo = gr.ChatInterface(
     title="2.1 OAI Agent SDK ReAct + LangFuse Code Interpreter",
     type="messages",
     examples=[
-        "What is the sum of the column `x` in this example_a.csv?",
-        "What is the sum of the column `y` in this example_a.csv?",
+        "How many columns are in the file data_b.csv? Save answer as a dictionary in file in pickle format named 'result.pickle' ",
+        "How many columns are in the file data_b.csv? Save answer as a dictionary in file named 'result.json' ",
         "Create a linear best-fit line for the data in example_a.csv.",
     ],
 )

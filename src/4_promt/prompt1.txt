@@ -1,0 +1,26 @@
+    build a machine leaning model using file data_b.csv and using column 'target' as labels. 
+    please drop columns id, date, client_id, card_id, card_number, expires, cvv. 
+    column mcc is categorical. 
+    First try to use all numerical columns and ignore columns with text information.\
+    do feature analysis and select only top 7 features to build a final model.
+      Calculate precission and recall.
+    provide confusion matrix, calculate ROC_AUC. 
+    after the model trained create a dictionary with the model and saved it as pickle file 'model.pickle' into the folder result. Create folder result if it not exists.
+
+    use file data_b.csv   convert the 'expires' column into a numerical format. convert the 'expires' column into the number of months since a reference date (e.g., January 1900) to allow for correlation calculation. and check correlation between columns expires and column target. 
+
+
+     build a machine leaning model using file data_b.csv and using column 'target' as labels. 
+    please drop columns id, date, client_id, card_id, card_number, expires, cvv. First try to use all numerical columns and ignore columns with test information.
+    calculate ROC_AUC. return the followng information: number of featurs used by the  model. run correlation of each of 5-top features with target. 
+    Calculate precission and recall.
+    provide confusion matrix.
+
+         build a machine leaning model using file data_b.csv and using column 'target' as labels. 
+  why there is so strong correlation  between amount and target?
+
+
+  
+Build  fraud detection systems using file data_b.csv and using column 'target' as labels. 
+    please drop columns id, date, client_id, card_id, card_number, expires, cvv. 
+Return the list features and caclulate correlation between each feature and target.  

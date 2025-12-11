@@ -16,6 +16,7 @@ class _CodeInterpreterOutputError(BaseModel):
     name: str
     value: str
     traceback: str
+    
 
 
 class CodeInterpreterOutput(BaseModel):
@@ -24,6 +25,8 @@ class CodeInterpreterOutput(BaseModel):
     stdout: list[str]
     stderr: list[str]
     error: _CodeInterpreterOutputError | None = None
+    downloaded_local_path: str | None = None  # New field
+    download_success: bool = False             # New field
 
     def __init__(self, stdout: list[str], stderr: list[str], **kwargs):
         """Split lines in stdout and stderr."""
@@ -109,6 +112,8 @@ class CodeInterpreter:
         local_files: "Sequence[Path | str]| None" = None,
         timeout_seconds: int = 30,
         template_name: str | None = None,
+        sandbox_output_file: str | None = None,
+        local_save_directory: str = "local_sandbox_downloads" # Default to a safe directory
     ):
         """Configure your Code Interpreter session.
 
@@ -136,7 +141,10 @@ class CodeInterpreter:
                 self.local_files.extend(_enumerate_files(_path))
         self.template_name = template_name
 
-    async def run_code(self, code: str) -> str:
+    async def run_code(self, code: str, 
+                       sandbox_output_file: str | None = None,
+        local_save_directory: str = "local_sandbox_downloads" # Default to a safe directory
+        ) -> str:
         """Run the given Python code in a sandbox environment.
 
         Parameters
@@ -154,6 +162,31 @@ class CodeInterpreter:
                 code, on_error=lambda error: print(error.traceback)
             )
             response = CodeInterpreterOutput.model_validate_json(result.logs.to_json())
+
+            if sandbox_output_file:
+                try:
+                    # This is a hypothetical call, assuming e2b_code_interpreter provides files.read()
+
+                    file_content_bytes = await sbx.files.read('result.json')
+                    print(type(file_content_bytes))
+                    with open(Path(local_save_directory)/Path('text.log'), "w") as f:
+                        f.write(str(type(file_content_bytes)))
+
+                    local_dir = Path(local_save_directory)
+                    local_dir.mkdir(parents=True, exist_ok=True) # Ensure local directory exists
+
+                    local_path = local_dir / Path(sandbox_output_file).name
+                    print (local_path)
+
+                    with open(local_path, "w") as f:
+                        f.write(file_content_bytes)
+
+                    response.downloaded_local_path = str(local_path)
+                    response.download_success = True
+                    print(f"Successfully downloaded '{sandbox_output_file}' from sandbox to '{local_path}'")
+                except Exception as e:
+                    print(f"Error downloading '{sandbox_output_file}' from sandbox: {e}")
+                    response.download_success = False # Indicate failure
 
             error = result.error
             if error is not None:
