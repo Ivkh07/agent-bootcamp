@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 from typing import Sequence
-
+import base64
 from e2b_code_interpreter import AsyncSandbox
 from pydantic import BaseModel
 
@@ -167,20 +167,25 @@ class CodeInterpreter:
                 try:
                     # This is a hypothetical call, assuming e2b_code_interpreter provides files.read()
 
-                    file_content_bytes = await sbx.files.read('result.json')
+                    file_content_bytes = await sbx.files.read ('result.json')
+
+                    print(file_content_bytes[:200])
+                    #file_content_bytes = base64.b64decode(content)
                     print(type(file_content_bytes))
                     with open(Path(local_save_directory)/Path('text.log'), "w") as f:
-                        f.write(str(type(file_content_bytes)))
+                        f.write(str(type(response)))
 
                     local_dir = Path(local_save_directory)
                     local_dir.mkdir(parents=True, exist_ok=True) # Ensure local directory exists
 
                     local_path = local_dir / Path(sandbox_output_file).name
-                    print (local_path)
+                    print ('local path', local_path)
+                    print ('local path2', local_dir / 'response.txt')
 
                     with open(local_path, "w") as f:
                         f.write(file_content_bytes)
-
+                    with open(local_path, "w") as f:
+                        f.write(response['stdout'])
                     response.downloaded_local_path = str(local_path)
                     response.download_success = True
                     print(f"Successfully downloaded '{sandbox_output_file}' from sandbox to '{local_path}'")
