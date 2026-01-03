@@ -1,0 +1,32 @@
+The clustering model has been successfully built, and the insights for each cluster have been saved to result.json.
+
+Here's a summary of the insights for each cluster, based on the median values of their numerical features:
+
+Cluster 1:
+
+Average Transaction Amount: \$28.94
+Age Profile: Median current age of 47 years old, with a birth year of 1972.
+Income & Debt: Median yearly income of \$41,845 and total debt of \$63,689.
+Credit Profile: Median credit score of 715, 4 credit cards, and a credit limit of \$12,900.
+Geographic: Latitude 38.74, longitude -85.25, and a zip code of 47660.
+Cluster 2:
+
+Average Transaction Amount: \$25.75
+Age Profile: Median current age of 73 years old, with a birth year of 1946. This cluster appears to represent an older demographic.
+Income & Debt: Median yearly income of \$33,483 and total debt of \$10,400. Notably lower debt compared to other clusters.
+Credit Profile: Median credit score of 722, 5 credit cards, and a credit limit of \$11,836.
+Geographic: Latitude 36.75, longitude -93.17, and a zip code of 55044.
+Cluster 3:
+
+Average Transaction Amount: \$38.72
+Age Profile: Median current age of 51 years old, with a birth year of 1968.
+Income & Debt: Median yearly income of \$97,248 and total debt of \$130,160. This cluster has the highest income and debt among the three.
+Credit Profile: Median credit score of 712, 3 credit cards, and a credit limit of \$31,362. This cluster has the highest credit limit.
+Geographic: Latitude 40.6, longitude -84.27, and a zip code of 47660.
+Overall Observations:
+
+Transaction Amount: Cluster 3 shows a slightly higher median transaction amount compared to the other two.
+Age: Cluster 2 stands out with a significantly older demographic.
+Financial Health: Cluster 3 appears to be the most affluent, with higher income, debt, and credit limits. Cluster 2 has the lowest debt.
+Credit Score: All clusters have relatively similar median credit scores, indicating good creditworthiness across the board.
+These insights can be used to understand the different customer segments present in the data. Further analysis could involve examining the categorical features (original, not the one-hot encoded mcc columns) within each cluster to gain even deeper insights into their behavior and preferences.

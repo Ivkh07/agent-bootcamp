@@ -1,0 +1,1 @@
+{"code": "\nimport pandas as pd\n\ndf = pd.read_csv(\"data_b.csv\")\nnum_columns = len(df.columns)\n\nresult_dict = {\"num_columns\": num_columns}\nresult_df = pd.DataFrame([result_dict])\n\nresult_df.to_csv(\"result.csv\", index=False)\n", "results": "{\"stdout\": [], \"stderr\": []}", "stdout": []}

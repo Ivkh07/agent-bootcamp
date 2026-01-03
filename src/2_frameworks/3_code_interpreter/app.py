@@ -6,7 +6,7 @@ You will need your E2B API Key.
 """
 
 from pathlib import Path
-
+import json
 import agents
 import gradio as gr
 from dotenv import load_dotenv
@@ -41,9 +41,11 @@ Recommended packages: Pandas, Numpy, SymPy, Scikit-learn.
 
 You can also run Jupyter-style shell commands (e.g., `!pip freeze`)
 but you won't be able to install packages.
+to answer questions use file named 'data_b.csv'
+
 """
 
-AGENT_LLM_NAME = "gemini-2.5-pro"#"gemini-2.5-flash"
+AGENT_LLM_NAME = "gemini-2.5-flash"#"gemini-2.5-"pro
 async_openai_client = AsyncOpenAI()
 code_interpreter = CodeInterpreter(
     local_files=[
@@ -75,7 +77,7 @@ async def _main(question: str, gr_messages: list[ChatMessage]):
         ),
     )
 
-    with langfuse_client.start_as_current_span(name="Agents-SDK-Trace") as span:
+    with langfuse_client.start_as_current_span(name="ik_Agents-SDK-Trace") as span:
         span.update(input=question)
 
         result_stream = agents.Runner.run_streamed(main_agent, input=question)
@@ -95,9 +97,9 @@ demo = gr.ChatInterface(
     title="2.1 OAI Agent SDK ReAct + LangFuse Code Interpreter",
     type="messages",
     examples=[
-        "How many columns are in the file data_b.csv? Save answer as a dictionary in file in pickle format named 'result.pickle' ",
-        "How many columns are in the file data_b.csv? Save answer as a dictionary in file named 'result.json' ",
-        "Create a linear best-fit line for the data in example_a.csv.",
+        "How many columns are in the file data_b.csv? Save answer n a file named 'result.csv' ",
+        "How many columns are in the file data_b.csv? Save answer as a dictionary in file named 'result.csv' ",
+        "Build a clustering model using data_b.csv. Drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use only numerical features; treat mcc as categorical and encode it into 5 features. Impute missing numerical values with the median. Compute the silhouette score and provide descriptive insights for each cluster. Save the output in result.csv.",
     ],
 )
 

@@ -1,0 +1,63 @@
+The anomaly detection process has been successfully completed.
+
+Number of detected anomalies: 506
+
+Summary of Key Characteristics:
+
+Numerical Features:
+
+Anomalies:
+merchant_id: Mean is 50882.00, with a standard deviation of 25384.99.
+zip: Mean is 44282.97, with a standard deviation of 29755.77.
+mcc: Mean is 5525.20, with a standard deviation of 878.33.
+current_age: Mean is 56.50, with a standard deviation of 15.65.
+retirement_age: Mean is 66.53, with a standard deviation of 3.72.
+birth_year: Mean is 1962.58, with a standard deviation of 15.63.
+birth_month: Mean is 7.52, with a standard deviation of 3.62.
+latitude: Mean is 37.07, with a standard deviation of 5.83.
+longitude: Mean is -90.78, with a standard deviation of 18.62.
+credit_score: Mean is 702.96, with a standard deviation of 71.53.
+num_credit_cards: Mean is 3.87, with a standard deviation of 1.80.
+num_cards_issued: Mean is 1.53, with a standard deviation of 0.50.
+year_pin_last_changed: Mean is 2010.73, with a standard deviation of 2.85.
+Normal Transactions:
+merchant_id: Mean is 47620.63, with a standard deviation of 25836.28.
+zip: Mean is 51439.78, with a standard deviation of 27401.75.
+mcc: Mean is 5565.93, with a standard deviation of 868.67.
+current_age: Mean is 55.15, with a standard deviation of 15.35.
+retirement_age: Mean is 66.48, with a standard deviation of 3.63.
+birth_year: Mean is 1964.02, with a standard deviation of 15.32.
+birth_month: Mean is 6.64, with a standard deviation of 3.60.
+latitude: Mean is 37.38, with a standard deviation of 5.14.
+longitude: Mean is -91.92, with a standard deviation of 16.23.
+credit_score: Mean is 714.51, with a standard deviation of 65.32.
+num_credit_cards: Mean is 3.93, with a standard deviation of 1.57.
+num_cards_issued: Mean is 1.53, with a standard deviation of 0.52.
+year_pin_last_changed: Mean is 2010.89, with a standard deviation of 3.03.
+Categorical Features (Top 5 values by proportion):
+
+Anomalies:
+use_chip: "Swipe Transaction" (0.919), "Online Transaction" (0.081)
+merchant_city: "ONLINE" (0.081), "Merritt Island" (0.045), "Louisville" (0.036), "Omaha" (0.028), "Batesville" (0.026)
+merchant_state: "CA" (0.138), "GA" (0.121), "RI" (0.063), "IL" (0.055), "NY" (0.051)
+errors: "Insufficient Balance" (0.994), "Technical Glitch" (0.004), "Bad PIN" (0.002)
+target: "No" (0.996), "Yes" (0.004)
+gender: "Female" (0.524), "Male" (0.476)
+card_brand: "Mastercard" (0.593), "Visa" (0.304), "Amex" (0.063), "Discover" (0.040)
+card_type: "Debit" (0.542), "Credit" (0.385), "Debit (Prepaid)" (0.073)
+has_chip: "YES" (0.917), "NO" (0.083)
+card_on_dark_web: "No" (1.0)
+Normal Transactions:
+use_chip: "Swipe Transaction" (0.880), "Online Transaction" (0.120)
+merchant_city: "ONLINE" (0.120), "Houston" (0.012), "Miami" (0.008), "Dallas" (0.007), "Indianapolis" (0.007)
+merchant_state: "CA" (0.225), "TX" (0.081), "NY" (0.064), "FL" (0.055), "OH" (0.044)
+errors: "Insufficient Balance" (0.994), "Bad PIN" (0.003), "Technical Glitch" (0.002), "Bad Expiration" (0.0004), "Bad CVV" (0.0004)
+target: "No" (0.989), "Yes" (0.011)
+gender: "Female" (0.514), "Male" (0.486)
+card_brand: "Mastercard" (0.535), "Visa" (0.371), "Amex" (0.071), "Discover" (0.024)
+card_type: "Debit" (0.627), "Credit" (0.305), "Debit (Prepaid)" (0.068)
+has_chip: "YES" (0.906), "NO" (0.094)
+card_on_dark_web: "No" (1.0)
+The results indicate some differences in the distributions of both numerical and categorical features between anomalous and normal transactions. For instance, use_chip shows a slightly higher proportion of "Swipe Transaction" for anomalies, while merchant_city and merchant_state have different dominant categories. The errors column is predominantly "Insufficient Balance" for both, but the other error types vary in their minor proportions. The target variable is almost exclusively "No" for anomalies, as expected for unsupervised anomaly detection which does not use this label during training.
+
+The detailed summaries are also available in the result.json file.

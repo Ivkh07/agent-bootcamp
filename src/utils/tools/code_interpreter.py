@@ -8,7 +8,7 @@ from e2b_code_interpreter import AsyncSandbox
 from pydantic import BaseModel
 
 from ..async_utils import gather_with_progress
-
+import json
 
 class _CodeInterpreterOutputError(BaseModel):
     """Error from code interpreter."""
@@ -17,7 +17,18 @@ class _CodeInterpreterOutputError(BaseModel):
     value: str
     traceback: str
     
+def save_to_db_or_file(result: dict):
+        """Custom persistence hook: Save to DB or file."""
+        # You can adjust this to save to a DB or a file depending on your needs.
+        # In this case, we'll save to a file for demonstration purposes.
+        save_to_file(result)
 
+def save_to_file(result: dict):
+        """Save the execution result to a JSON file."""
+        log_file = "execution_logs.json"
+        with open(log_file, "a") as f:
+            json.dump(result, f)
+            f.write("\n")  # New line to separate entries for easier reading
 
 class CodeInterpreterOutput(BaseModel):
     """Output from code interpreter."""
@@ -163,42 +174,38 @@ class CodeInterpreter:
             )
             response = CodeInterpreterOutput.model_validate_json(result.logs.to_json())
 
-            if sandbox_output_file:
-                try:
-                    # This is a hypothetical call, assuming e2b_code_interpreter provides files.read()
 
-                    file_content_bytes = await sbx.files.read ('result.json')
+            fname = 'result.csv'
+            try:
+            
+                file_content_bytes = await sbx.files.read (fname)
+                local_dir = Path(local_save_directory)
+                local_dir.mkdir(parents=True, exist_ok=True) # Ensure local directory exists
 
-                    print(file_content_bytes[:200])
-                    #file_content_bytes = base64.b64decode(content)
-                    print(type(file_content_bytes))
-                    with open(Path(local_save_directory)/Path('text.log'), "w") as f:
-                        f.write(str(type(response)))
+                local_path = local_dir / Path(fname)
 
-                    local_dir = Path(local_save_directory)
-                    local_dir.mkdir(parents=True, exist_ok=True) # Ensure local directory exists
 
-                    local_path = local_dir / Path(sandbox_output_file).name
-                    print ('local path', local_path)
-                    print ('local path2', local_dir / 'response.txt')
+                with open(local_path, "w") as f:
+                    f.write(file_content_bytes)
 
-                    with open(local_path, "w") as f:
-                        f.write(file_content_bytes)
-                    with open(local_path, "w") as f:
-                        f.write(response['stdout'])
-                    response.downloaded_local_path = str(local_path)
-                    response.download_success = True
-                    print(f"Successfully downloaded '{sandbox_output_file}' from sandbox to '{local_path}'")
-                except Exception as e:
-                    print(f"Error downloading '{sandbox_output_file}' from sandbox: {e}")
-                    response.download_success = False # Indicate failure
+                response.downloaded_local_path = str(local_path)
+                response.download_success = True
+                print(f"Successfully downloaded '{fname}' from sandbox to '{local_path}'")
+            except Exception as e:
+                print(f"Error downloading '{fname}' from sandbox: {e}")
+                response.download_success = False # Indicate failure
 
             error = result.error
             if error is not None:
                 response.error = _CodeInterpreterOutputError.model_validate_json(
                     error.to_json()
                 )
+            execution_result  = {
+                "code": code,
+                "results": result.logs.to_json(),
+                "stdout": result.logs.stdout,}
 
+            save_to_db_or_file(execution_result)
             return response.model_dump_json()
         finally:
             await sbx.kill()
