@@ -34,7 +34,7 @@ column mcc is categorical. Impute columns with NA usng median.
 provide descriptive information about the clusters.  Save answer as a dictionary in file named 'result.json'
 
 good try
-Build a clustering model using the file data_b.csv. Drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use all numerical columns only and ignore columns containing text; treat mcc as a categorical feature. Impute missing values in numerical columns using the median. Provide descriptive insights about each cluster and save the results as a dictionary in a file named result.json
+Build a clustering model using the file data_b.csv. Drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use all numerical columns only and ignore columns containing text; treat mcc as a categorical feature. Impute missing values in numerical columns using the median. Provide descriptive insights about each cluster, caclulate silhouette score and save the results as a dictionary in a file named result.json
 
 modification
 short
@@ -44,6 +44,9 @@ Build a clustering model using data_b.csv. Drop the columns id, date, client_id,
 Build a clustering model using the file data_b.csv. Drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use all numerical columns only and ignore columns containing text; treat mcc as a categorical feature, create just 5 columns from mcc. Impute missing values in numerical columns using the median. Provide descriptive insights about each cluster, calculate the silhouette score  and save the results as a dictionary in a file named result.json
 
 
-clustering 
+anomalous
 Load data_b.csv and drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use the remaining features to identify anomalous transactions using an unsupervised anomaly detection method. Properly scale numerical features, handle missing values, and return:
+the number of detected anomalies, show a summary of their key characteristics compared to normal transactions. Save anomalous transactions into result.csv.
+
+Identify anomalous transactions using an unsupervised anomaly detection method. Properly scale numerical features, handle missing values, and return:
 the number of detected anomalies, show a summary of their key characteristics compared to normal transactions. Save anomalous transactions into result.csv.

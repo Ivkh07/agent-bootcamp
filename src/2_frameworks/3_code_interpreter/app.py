@@ -41,11 +41,11 @@ Recommended packages: Pandas, Numpy, SymPy, Scikit-learn.
 
 You can also run Jupyter-style shell commands (e.g., `!pip freeze`)
 but you won't be able to install packages.
-to answer questions use file named 'data_b.csv'
+to answer questions use file named 'data_b.csv'.
 
 """
 
-AGENT_LLM_NAME = "gemini-2.5-flash"#"gemini-2.5-"pro
+AGENT_LLM_NAME = "gemini-2.5-pro"#"gemini-2.5-"pro flash
 async_openai_client = AsyncOpenAI()
 code_interpreter = CodeInterpreter(
     local_files=[
@@ -97,9 +97,19 @@ demo = gr.ChatInterface(
     title="2.1 OAI Agent SDK ReAct + LangFuse Code Interpreter",
     type="messages",
     examples=[
-        "How many columns are in the file data_b.csv? Save answer n a file named 'result.csv' ",
-        "How many columns are in the file data_b.csv? Save answer as a dictionary in file named 'result.csv' ",
-        "Build a clustering model using data_b.csv. Drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use only numerical features; treat mcc as categorical and encode it into 5 features. Impute missing numerical values with the median. Compute the silhouette score and provide descriptive insights for each cluster. Save the output in result.csv.",
+       """Build a clustering model using the file data_b.csv. Drop the columns id, date, client_id, card_id, card_number, expires, and cvv. Use all numerical columns only and ignore columns containing text; treat mcc as a categorical feature. Impute missing values in numerical columns using the median. come up with cluster name, provide descriptive insights about each cluster, caclulate silhouette score and save the results as a dictionary in a file named result.csv""",
+        """build a machine leaning model using file data_b.csv and using column 'target' as labels.
+please drop columns id, date, client_id, card_id, card_number, expires, cvv.
+column mcc is categorical.
+First try to use all numerical columns and ignore columns with text information.
+do feature analysis and select only top 7 features to build a final model.
+Calculate precission and recall.
+provide confusion matrix, calculate ROC_AUC. Save the output in result.csv.""",
+       """Load data_b.csv and drop the columns id, date, client_id, card_id, card_number, expires, and cvv.
+Preprocess the remaining features by imputing missing values and scaling numerical variables.
+Apply an unsupervised anomaly detection algorithm (e.g., Isolation Forest or LOF) to identify anomalous transactions.
+Report the number and percentage of anomalies, and provide a comparative summary of key features for anomalous vs. normal transactions.
+Save all detected anomalous transactions to result.csv.""",
     ],
 )
 
